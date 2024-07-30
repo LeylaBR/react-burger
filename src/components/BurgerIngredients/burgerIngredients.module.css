@@ -1,0 +1,31 @@
+.ingredients {
+    width: calc(50% - 20px);
+}
+
+.container {
+    height: 100vh;
+    overflow-y: scroll;
+    margin-top: 40px;
+    scrollbar-width: 8px;
+    scrollbar-color: #8585AD #2F2F37;
+}
+
+.container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+    background: #2F2F37;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background: #8585AD;
+}
+
+.ingredientsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 24px 16px 40px;
+    gap: 24px;
+}
+

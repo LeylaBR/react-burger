@@ -1,0 +1,13 @@
+.overlay {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный черный фон */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
