@@ -1,19 +1,24 @@
 import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from "./totalCost.module.css";
-import React, {FC, useContext} from "react";
-import {ModalContext} from "../../App";
+import React, {FC, useState} from "react";
 import OrderCardModal from "./OrderCardModal";
+import Modal from "../Modal";
 
 interface TotalCostProps {
     totalCost: number
 }
 
 const TotalCost: FC<TotalCostProps> = ({totalCost}) => {
-    const context = useContext(ModalContext);
+    const [visibleModal, setVisibleModal] = useState<boolean>(false)
 
-    const modalInfo = {
-        header: '',
-        content: <OrderCardModal />
+    const handleOpenModal = () => {
+        document.body.style.overflow = 'hidden'
+        setVisibleModal(true);
+    }
+
+    const handleCloseModal = () => {
+        document.body.style.overflow = 'auto'
+        setVisibleModal(false);
     }
 
     return (
@@ -24,9 +29,12 @@ const TotalCost: FC<TotalCostProps> = ({totalCost}) => {
                 </p>
                 <CurrencyIcon type="primary"/>
             </div>
-            <Button onClick={()=>context.handleOpenModal(modalInfo)} htmlType="button" type="primary" size="large">
+            <Button onClick={handleOpenModal} htmlType="button" type="primary" size="large">
                 Оформить заказ
             </Button>
+            {visibleModal && <Modal handleCloseModal={handleCloseModal} >
+                <OrderCardModal />
+            </Modal>}
         </div>
     )
 }

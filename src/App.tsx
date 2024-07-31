@@ -1,62 +1,31 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import Layout from "./components/Layout";
-import Modal from './components/Modal';
-
-const URL = 'https://norma.nomoreparties.space/api/ingredients'
-
-export const ModalContext = React.createContext<any>(null);
+import {URL} from './constants'
+import {Ingredient} from "./components/types";
 
 function App() {
-    const [ingredients, setIngredients] = useState([])
-    const [visibleModal, setVisibleModal] = useState(false)
-    const [modalContent, setModalContent] = useState<any>(null);
-
-
-    const handleOpenModal = (content: any) => {
-        document.body.style.overflow = 'hidden'
-        setModalContent(content)
-        setVisibleModal(true);
-
-    }
-
-    const handleCloseModal = () => {
-        document.body.style.overflow = 'auto'
-        setModalContent(null);
-        setVisibleModal(false);
-    }
+    const [ingredients, setIngredients] = useState<Ingredient[]>([])
 
     const getData = () => {
         fetch(URL)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error status: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => setIngredients(data.data))
-            .catch(e => console.log(e.message))
+            .catch(e => {
+                throw new Error(e.message)
+            })
     }
 
     useEffect(() => {
         getData()
     }, [])
 
-
-    const contextValues = useMemo(
-        () => ({
-            handleOpenModal,
-            handleCloseModal,
-            modalContent
-        }),
-        [visibleModal, modalContent]
-    );
-
-    return (
-        <>
-            <ModalContext.Provider value={contextValues}>
-                <Layout ingredients={ingredients}/>
-            </ModalContext.Provider>
-            {visibleModal && <Modal handleCloseModal={handleCloseModal} header={modalContent?.header}
-                                    content={modalContent?.content}/>}
-        </>
-
-    );
+    return <Layout ingredients={ingredients}/>
 }
 
 export default App;

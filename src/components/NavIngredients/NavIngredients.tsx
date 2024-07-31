@@ -2,7 +2,7 @@ import {useState} from 'react'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 
 const NavIngredients = () => {
-    const [current, setCurrent] = useState('булки')
+    const [current, setCurrent] = useState<string>('булки')
 
     return (
         <div style={{ display: 'flex' }} className="mt-5 mb-10">

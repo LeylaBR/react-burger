@@ -6,4 +6,6 @@
 
 .item {
     gap: 8px;
+    color: white;
+    text-decoration: none;
 }

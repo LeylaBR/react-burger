@@ -5,14 +5,14 @@ import ModalOverlay from "./ModalOverlay";
 import styles from './modal.module.css';
 
 interface ModalProps {
-    header: string;
-    handleCloseModal: () => void
-    content: ReactElement
+    handleCloseModal: () => void;
+    header?: string;
+    children?: ReactElement | null
 }
 
-const modalRoot: any = document.getElementById("react-modals");
+const modalRoot: HTMLElement | null = document.getElementById("react-modals");
 
-const Modal: FC<ModalProps> = ({header, handleCloseModal, content}) => {
+const Modal: FC<ModalProps> = ({header, handleCloseModal, children}) => {
     const handleEscClose = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
             handleCloseModal();
@@ -26,6 +26,9 @@ const Modal: FC<ModalProps> = ({header, handleCloseModal, content}) => {
         };
     }, []);
 
+    if (!modalRoot) {
+        return null
+    }
 
     return createPortal(
         (
@@ -38,7 +41,7 @@ const Modal: FC<ModalProps> = ({header, handleCloseModal, content}) => {
                             <CloseIcon type="primary"/>
                         </Button>
                     </div>
-                    {content}
+                    {children}
                 </div>
             </ModalOverlay>
         ),
