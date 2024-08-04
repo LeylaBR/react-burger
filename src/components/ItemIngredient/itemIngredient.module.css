@@ -1,0 +1,19 @@
+.block {
+    width: calc(50% - 12px);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.img {
+    min-width: 240px;
+}
+
+.price {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}

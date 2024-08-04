@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import Layout from "./components/Layout";
+import {URL} from './constants'
+import {Ingredient} from "./components/types";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [ingredients, setIngredients] = useState<Ingredient[]>([])
+
+    const getData = () => {
+        fetch(URL)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => setIngredients(data.data))
+            .catch(e => {
+                throw new Error(e.message)
+            })
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
+
+    return <Layout ingredients={ingredients}/>
 }
 
 export default App;

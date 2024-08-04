@@ -1,0 +1,10 @@
+.element {
+    margin: 16px 0;
+    position: relative;
+}
+
+.icon {
+    position: absolute;
+    left: -30px;
+    top: 38%;
+}

@@ -1,0 +1,11 @@
+.container, .item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.item {
+    gap: 8px;
+    color: white;
+    text-decoration: none;
+}

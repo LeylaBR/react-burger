@@ -1,0 +1,17 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.img {
+    min-width: 480px;
+    object-fit: cover;
+    margin-bottom: 16px;
+}
+
+.composition {
+    display: flex;
+    gap: 20px;
+}
+
