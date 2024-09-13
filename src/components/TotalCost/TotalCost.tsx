@@ -1,24 +1,23 @@
 import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from "./totalCost.module.css";
-import React, {FC, useState} from "react";
+import React, {FC } from "react";
 import OrderCardModal from "./OrderCardModal";
 import Modal from "../Modal";
+import {useAppDispatch, useAppSelector} from "../../services/hooks";
+import {orderActions, orderSelectors} from "../../services/order/orderSlice";
 
 interface TotalCostProps {
     totalCost: number
+    handleCreateOrder: ()=> void
 }
 
-const TotalCost: FC<TotalCostProps> = ({totalCost}) => {
-    const [visibleModal, setVisibleModal] = useState<boolean>(false)
-
-    const handleOpenModal = () => {
-        document.body.style.overflow = 'hidden'
-        setVisibleModal(true);
-    }
+const TotalCost: FC<TotalCostProps> = ({totalCost, handleCreateOrder}) => {
+    const dispatch = useAppDispatch();
+    const visibleModal = useAppSelector(orderSelectors.selectVisibleModal)
 
     const handleCloseModal = () => {
         document.body.style.overflow = 'auto'
-        setVisibleModal(false);
+        dispatch(orderActions.setVisibleModal(false))
     }
 
     return (
@@ -29,7 +28,7 @@ const TotalCost: FC<TotalCostProps> = ({totalCost}) => {
                 </p>
                 <CurrencyIcon type="primary"/>
             </div>
-            <Button onClick={handleOpenModal} htmlType="button" type="primary" size="large">
+            <Button onClick={handleCreateOrder} htmlType="button" type="primary" size="large">
                 Оформить заказ
             </Button>
             {visibleModal && <Modal handleCloseModal={handleCloseModal} >

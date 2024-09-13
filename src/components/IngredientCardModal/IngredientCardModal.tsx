@@ -1,12 +1,13 @@
-import {Ingredient} from "../types";
-import React, {FC} from "react";
+import React from "react";
 import styles from "./ingredientCardModal.module.css";
+import {useAppSelector} from "../../services/hooks";
+import {modalSelectors} from "../../services/modal/modalSlice";
+import {Ingredient} from "../types";
 
-interface IngredientCardModalProps {
-    ingredient: Ingredient
-}
 
-const IngredientCardModal: FC<IngredientCardModalProps> = ({ingredient}) => {
+const IngredientCardModal = () => {
+    const ingredient =  useAppSelector(modalSelectors.selectData) as Ingredient
+
     const {image, name, calories,proteins, fat, carbohydrates} = ingredient
 
     return (
