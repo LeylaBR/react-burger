@@ -13,7 +13,7 @@ const modalSlice = createSlice({
             state.data = action.payload
         },
         deleteData: (state) => {
-            state.data = {}
+            state.data = null
         },
     },
     selectors: {

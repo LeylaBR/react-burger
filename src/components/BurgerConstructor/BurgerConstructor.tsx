@@ -51,7 +51,7 @@ const BurgerConstructor: FC<BurgerConstructorProps> = ({selectedIngredients, onA
         {selectedIngredients.length ? (
             selectedIngredients.map((ingredient, index) => (
                     <SortableIngredient
-                        key={`${ingredient._id}${index}`}
+                        key={ingredient.key}
                         index={index}
                         ingredient={ingredient}
                         handleRemoveIngredient={handleRemoveIngredient}

@@ -6,6 +6,7 @@ import BurgerConstructor from "../BurgerConstructor";
 import TotalCost from "../TotalCost";
 import styles from "./layout.module.css";
 import {Ingredient} from "../types";
+import { v4 as uuidv4 } from 'uuid';
 
 import {useAppSelector, useAppDispatch} from "../../services/hooks";
 import {ingredientsSelectors, ingredientsActions} from "../../services/ingredients/ingredientsSlice";
@@ -29,7 +30,8 @@ const Layout: FC = () => {
     }, [dispatch, status]);
 
     const handleAddIngredient = (ingredient: Ingredient) => {
-        dispatch(ingredientsActions.addIngredient(ingredient));
+        const ingredientWithKey = { ...ingredient, key: uuidv4() };
+        dispatch(ingredientsActions.addIngredient(ingredientWithKey));
     };
 
     const handleCreateOrder = () => {
