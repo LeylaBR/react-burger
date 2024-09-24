@@ -1,57 +1,89 @@
-import AppHeader from '../AppHeader'
-import BurgerIngredients from '../BurgerIngredients'
-import BurgerConstructor from '../BurgerConstructor'
-import styles from './layout.module.css'
+import React, {FC, useEffect} from "react";
+import {fetchIngredients} from "../../services/ingredients/thunks";
+import AppHeader from "../AppHeader";
+import BurgerIngredients from "../BurgerIngredients";
+import BurgerConstructor from "../BurgerConstructor";
 import TotalCost from "../TotalCost";
-import {FC, useEffect, useState} from "react";
+import styles from "./layout.module.css";
 import {Ingredient} from "../types";
-import {selected} from "../../utils/data";
+import { v4 as uuidv4 } from 'uuid';
 
-interface LayoutProps {
-    ingredients: Ingredient[]
-}
+import {useAppSelector, useAppDispatch} from "../../services/hooks";
+import {ingredientsSelectors, ingredientsActions} from "../../services/ingredients/ingredientsSlice";
+import {orderActions, orderSelectors} from "../../services/order/orderSlice";
+import {fetchOrder} from "../../services/order/thunks";
 
-const Layout: FC<LayoutProps> = ({ingredients}) => {
-    const [selectedIngredient, setSelectedIngredient] = useState<Ingredient[]>(selected)
-    const [totalCost, setTotalCost] = useState<number>(0)
-    const [countTimeSelected, setCountTimeSelected] = useState<{ [key: string]: number }>({})
+const Layout: FC = () => {
+    const dispatch = useAppDispatch();
+    const ingredients = useAppSelector(ingredientsSelectors.selectData)
+    const status = useAppSelector(ingredientsSelectors.selectStatus)
+    const selectedIngredients = useAppSelector(ingredientsSelectors.selectSelectedIngredients);
+    const selectedBun = useAppSelector(ingredientsSelectors.selectSelectedBun);
+    const countTimeSelected = useAppSelector(ingredientsSelectors.selectCountTimeSelected)
+    const totalCost = useAppSelector(orderSelectors.selectTotalCost)
 
-
-    const onClickIngredient = (ingredient: Ingredient) => {
-        setCountTimeSelected((prev) => {
-           return prev[ingredient._id] ? {...prev, [ingredient._id]: prev[ingredient._id] + 1} : {
-                ...prev,
-                    [ingredient._id]: 1
-            }
-        })
-
-
-        setSelectedIngredient([...selectedIngredient, ingredient])
-    }
 
     useEffect(() => {
-        const cost = selectedIngredient.reduce((acc, el) => {
-            acc += el.price
-            return acc
-        }, 0)
-        setTotalCost(cost)
-    }, [selectedIngredient])
+        if (status === 'idle') {
+            dispatch(fetchIngredients());
+        }
+    }, [dispatch, status]);
+
+    const handleAddIngredient = (ingredient: Ingredient) => {
+        const ingredientWithKey = { ...ingredient, key: uuidv4() };
+        dispatch(ingredientsActions.addIngredient(ingredientWithKey));
+    };
+
+    const handleCreateOrder = () => {
+        let ingredientIds = selectedIngredients.map((ingredient) => ingredient._id);
+
+        if (selectedBun) {
+            ingredientIds.push(selectedBun._id)
+        }
+
+        dispatch(fetchOrder(ingredientIds));
+    };
+
+
+    useEffect(() => {
+        let cost = selectedIngredients.reduce((acc, el) => {
+            acc += el.price;
+            return acc;
+        }, 0);
+
+        if (selectedBun) {
+            cost += selectedBun.price * 2;
+        }
+
+        dispatch(orderActions.setTotalCost(cost))
+    }, [selectedIngredients, selectedBun]);
+
+    if (status === 'loading') {
+        return <div>Loading...</div>;
+    }
+
+    if (status === 'failed') {
+        return <div>Error loading ingredients</div>;
+    }
 
     return (
         <div className={styles.layout}>
             <div className={styles.container}>
                 <AppHeader/>
                 <main className={styles.main}>
-                    <BurgerIngredients ingredients={ingredients} countTimeSelected={countTimeSelected} onClickIngredient={onClickIngredient}/>
+                    <BurgerIngredients
+                        ingredients={ingredients}
+                        countTimeSelected={countTimeSelected}
+                    />
                     <div className={styles.burgerConstructor}>
-                        <BurgerConstructor selectedIngredient={selectedIngredient}/>
-                        <TotalCost totalCost={totalCost}/>
+                        <BurgerConstructor selectedIngredients={selectedIngredients}
+                                           selectedBun={selectedBun} onAddIngredient={handleAddIngredient}/>
+                        <TotalCost totalCost={totalCost} handleCreateOrder={handleCreateOrder}/>
                     </div>
                 </main>
             </div>
         </div>
-    )
+    );
 }
 
-
-export default Layout
+export default Layout;
